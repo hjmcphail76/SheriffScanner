@@ -1,5 +1,4 @@
 import base64
-import nt
 import threading
 
 import cv2
@@ -149,7 +148,7 @@ def main(lidar_processor=None):
                 ui.label("NetworkTables").classes(SECTION)
                 ui.separator().classes("bg-slate-800")
                 nt_ip_input = (
-                    ui.input(label="Server IP", value=nt_interface.ip_address, placeholder="e.g. 10.TE.AM.2")
+                    ui.input(label="Server IP", value=nt.ip_address, placeholder="e.g. 10.TE.AM.2")
                     .props("outlined dense dark")
                     .classes("w-full")
                     .on("keydown.enter", lambda: submit_configuration(lidar_processor))
@@ -202,7 +201,7 @@ def main(lidar_processor=None):
 
     def refresh():
         if lidar_processor is not None:
-            system_status["nt_connected"] = nt_interface.get_nt_connected()
+            system_status["nt_connected"] = nt.get_nt_connected()
             system_status["sensor_connected"] = lidar_processor.is_connected()
 
             stats = lidar_processor.get_status()

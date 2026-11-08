@@ -1,11 +1,12 @@
 import base64
+import nt
 import threading
 
 import cv2
 import numpy as np
 from nicegui import ui
 
-import nt_interface
+import nt_interface as nt
 
 # Screen/canvas dimensions (SVG overlay coordinate space)
 WIDTH, HEIGHT = 800, 600
@@ -70,11 +71,6 @@ def _snapshot(seen):
 # ============================================================
 
 
-def set_nt_ip(ip):
-    """Called when the user sets the NetworkTables IP address."""
-    pass  # TODO: implement
-
-
 def main(lidar_processor=None):
     ui.dark_mode().enable()
     ui.colors(primary="#3b82f6", positive="#22c55e", negative="#ef4444", warning="#f59e0b")
@@ -116,13 +112,15 @@ def main(lidar_processor=None):
     
     def submit_configuration(lidar_processor):
         port = port_input.value.strip()
+        print(f"Submitting configuration - Port: {port}")
         if port and port != lidar_processor.get_com_port():
             lidar_processor.set_port(port)
             ui.notify(f"Port set to {port}", type="positive", position="top")
         
         ip = nt_ip_input.value.strip()
         if ip:
-            set_nt_ip(ip)
+            print(f"Submitting configuration - NetworkTables IP: {ip}")
+            nt.set_nt_ip(ip)
             ui.notify(f"NetworkTables address set to {ip}", type="positive", position="top")
             
     def toggle_visualization():

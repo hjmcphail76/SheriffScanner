@@ -115,7 +115,7 @@ def main(lidar_processor=None):
         port = port_input.value.strip()
         print(f"Port input value: {port}", flush=True)
         print(f"Submitting configuration - Port: {port}")
-        if port and port != lidar_processor.get_com_port():
+        if port and port != lidar_processor.get_port():
             lidar_processor.set_port(port)
             ui.notify(f"Port set to {port}", type="positive", position="top")
         

@@ -107,12 +107,12 @@ class LidarProcessor(threading.Thread):
         with self._state_lock:
             return self._last_error
     
-    def set_com_port(self, port):
+    def set_port(self, port):
         """Change the serial port and reconnect."""
         self.port = port
         self.reconnect()
     
-    def get_com_port(self):
+    def get_port(self):
         """Get the current serial port."""
         return self.port
 

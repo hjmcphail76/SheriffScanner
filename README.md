@@ -66,15 +66,12 @@ docker save ghcr.io/hjmcphail76/sheriffscanner/sheriff-scanner:latest | gzip | s
 Run on the Pi. This removes any existing `scanner-runner` container (it's fine if there isn't one) and starts a new one from the image you just loaded. The container restarts automatically on every boot.
 
 ```bash
-docker rm -f scanner-runner 2>/dev/null || true
-docker run -d \
-  --name scanner-runner \
-  --restart unless-stopped \
-  --device /dev/ttyUSB0:/dev/ttyUSB0 \
-  -p 8080:8080 \
-  -e SDL_VIDEODRIVER=dummy \
-  ghcr.io/hjmcphail76/sheriffscanner/sheriff-scanner:latest
+   docker run -d --name scanner-runner --restart unless-stopped \
+     --privileged -v /dev:/dev -p 8080:8080 -e SDL_VIDEODRIVER=dummy \
+     ghcr.io/hjmcphail76/sheriffscanner/sheriff-scanner:latest
 ```
+
+
 
 Optionally, free disk space by removing the old image left behind after an update:
 

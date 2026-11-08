@@ -346,7 +346,8 @@ class LidarProcessor(threading.Thread):
                 targets = await asyncio.to_thread(self.find_lidar_targets, xs, ys)
 
                 ui.enqueue_targets(targets)
-
+                
+                
                 # An empty target list still publishes, clearing old poses.
                 nt_interface.publish_poses(targets, scan_timestamp)
 

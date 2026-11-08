@@ -12,7 +12,6 @@ WIDTH, HEIGHT = 800, 600
 
 # Colors
 GREEN = "#00dc00"
-WHITE = "#ffffff"
 CYAN = "#00dcff"
 
 # Must match MAX_SCAN_DISTANCE_MM in main.py (main.py overwrites this at import).
@@ -22,8 +21,8 @@ SHOW_LABELS = True
 REFRESH_HZ = 30
 
 _lock = threading.Lock()
-_state = {"image": None, "targets": [], "box": None}
-_version = {"image": 0, "targets": 0, "box": 0}
+_state = {"image": None, "targets": []}
+_version = {"image": 0, "targets": 0}
 
 system_status = {
     "sensor_connected": False,
@@ -40,13 +39,6 @@ def enqueue_image(image_np):
     with _lock:
         _state["image"] = image_np
         _version["image"] += 1
-
-
-def enqueue_box(x1, y1, x2, y2):
-    """Legacy YOLO box in screen pixel coordinates."""
-    with _lock:
-        _state["box"] = (x1, y1, x2, y2)
-        _version["box"] += 1
 
 
 def enqueue_targets(targets):
@@ -208,8 +200,7 @@ def main(lidar_processor=None):
                 )
 
     # ---------- Refresh loop ----------
-    seen = {"image": 0, "targets": 0, "box": 0}
-    drawn = {"targets": "", "box": ""}
+    seen = {"image": 0, "targets": 0}
 
     def refresh():
         if lidar_processor is not None:
@@ -230,11 +221,7 @@ def main(lidar_processor=None):
             if "image" in changed and changed["image"] is not None:
                 view.set_source(image_to_data_url(changed["image"]))
             if "targets" in changed:
-                drawn["targets"] = targets_to_svg(changed["targets"])
-            if "box" in changed:
-                drawn["box"] = box_to_svg(changed["box"])
-            if "targets" in changed or "box" in changed:
-                view.content = drawn["targets"] + drawn["box"]
+                view.content = targets_to_svg(changed["targets"])
 
     ui.timer(1 / REFRESH_HZ, refresh)
 
@@ -317,14 +304,3 @@ def targets_to_svg(targets):
                 f'font-size="14" font-family="monospace">{label}</text>'
             )
     return "".join(parts)
-
-
-def box_to_svg(box):
-    """Legacy YOLO box (screen pixel coordinates) as SVG markup."""
-    if box is None:
-        return ""
-    x1, y1, x2, y2 = box
-    return (
-        f'<rect x="{int(x1)}" y="{int(y1)}" width="{int(x2 - x1)}" '
-        f'height="{int(y2 - y1)}" fill="none" stroke="{WHITE}" stroke-width="2"/>'
-    )

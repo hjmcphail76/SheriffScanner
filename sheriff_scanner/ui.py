@@ -111,20 +111,21 @@ def main(lidar_processor=None):
     
     def submit_configuration(lidar_processor):
         
-        print("Submitting configuration...")
+        print("Submitting configuration...", flush=True)
         port = port_input.value.strip()
-        print(f"Port input value: {port}")
+        print(f"Port input value: {port}", flush=True)
         print(f"Submitting configuration - Port: {port}")
         if port and port != lidar_processor.get_com_port():
             lidar_processor.set_port(port)
             ui.notify(f"Port set to {port}", type="positive", position="top")
         
         ip = nt_ip_input.value.strip()
-        print(f"IP input value: {ip}")
+        print(f"IP input value: {ip}", flush=True)
         if ip:
-            print(f"Submitting configuration - NetworkTables IP: {ip}")
+            print(f"Submitting configuration - NetworkTables IP: {ip}", flush=True)
             nt.set_nt_ip(ip)
-            ui.notify(f"NetworkTables address set to {ip}", type="positive", position="top")
+            
+            ui.notify(f"NetworkTables address set to {nt.ip_address}", type="positive", position="top")
             
     def toggle_visualization():
         active = not system_status["visualization_active"]

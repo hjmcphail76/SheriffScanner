@@ -29,8 +29,10 @@ def set_nt_ip(ip):
     """Set the IP address of the NT server to connect to."""
     global ip_address
     ip_address = ip
-    # Reinitialize the connection with the new IP
-    _init()
+    _init()  # make sure the instance exists (no-op if already created)
+    with _lock:
+        _inst.setServer(ip_address)
+    print(f"NT server set to {ip_address}", flush=True)
 
 def get_nt_connected():
     """Returns True if the NT client is connected to a server."""
